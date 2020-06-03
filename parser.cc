@@ -27,10 +27,7 @@ struct lexer_t {
 /*
  * expr = term * term | term / term | term + term | term - term
  * term = number | ( expr )
-
 term = 
-
-
  */
 
 
@@ -40,51 +37,7 @@ struct parser_t {
   struct value_t { value_t() : end(false), accepted(false) {} bool end; bool accepted; number_t value; };
   parser_t(const std::string& input) : lexer(input) {}
 
-  value_t expr() {
-    value_t v,v1,v2;
-    
-    auto token1 = lexer.next_token();
-    if (token1.end) { v.end = true; return v; }
-    if (token1.id != token_id::number) return v;
-    
-    auto token2 = lexer.next_token();
-    if (token2.end) { v.end = true; return v; }
-    if (token2.id != token_id::op_add
-	&& token2.id != token_id::op_sub
-	&& token2.id != token_id::op_mul
-	&& token2.id != token_id::op_div) return v;
-
-    auto token3 = lexer.next_token();
-    if (token3.end) { v.end = true; return v; }
-    if (token3.id != token_id::number) return v;
-
-    // ok we're set for the actual calculation...
-    if (token2.id == token_id::op_add) {
-      v.accepted = true;
-      v.value = token1.value + token3.value;
-      return v;
-    }
-    else if (token2.id == token_id::op_sub) {
-      v.accepted = true;
-      v.value = token1.value - token3.value;
-      return v;
-    }
-    else if (token2.id == token_id::op_mul) {
-      v.accepted = true;
-      v.value = token1.value * token3.value;
-      return v;
-    }
-    else if (token2.id == token_id::op_div) {
-      v.accepted = true;
-      v.value = token1.value / token3.value;
-      return v;
-    }
-    else {
-      // this should not happen..
-      v.end = true;
-      return v;
-    }
-  }
+  value_t expr();
 
   value_t term() {
     value_t v;
@@ -184,3 +137,55 @@ lexer_t::token_t lexer_t::next_token() {
   t.value = n;
   return t;
 }
+
+
+
+
+
+
+  parser_t::value_t parser_t::expr() {
+    value_t v,v1,v2;
+    
+    auto token1 = lexer.next_token();
+    if (token1.end) { v.end = true; return v; }
+    if (token1.id != token_id::number) return v;
+    
+    auto token2 = lexer.next_token();
+    if (token2.end) { v.end = true; return v; }
+    if (token2.id != token_id::op_add
+	&& token2.id != token_id::op_sub
+	&& token2.id != token_id::op_mul
+	&& token2.id != token_id::op_div) return v;
+
+    auto token3 = lexer.next_token();
+    if (token3.end) { v.end = true; return v; }
+    if (token3.id != token_id::number) return v;
+
+    // ok we're set for the actual calculation...
+    if (token2.id == token_id::op_add) {
+      v.accepted = true;
+      v.value = token1.value + token3.value;
+      return v;
+    }
+    else if (token2.id == token_id::op_sub) {
+      v.accepted = true;
+      v.value = token1.value - token3.value;
+      return v;
+    }
+    else if (token2.id == token_id::op_mul) {
+      v.accepted = true;
+      v.value = token1.value * token3.value;
+      return v;
+    }
+    else if (token2.id == token_id::op_div) {
+      v.accepted = true;
+      v.value = token1.value / token3.value;
+      return v;
+    }
+    else {
+      // this should not happen..
+      v.end = true;
+      return v;
+    }
+  }
+
