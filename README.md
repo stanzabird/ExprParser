@@ -1,12 +1,15 @@
 # expr-parser
 
-This program attempts to parse the normal mathematical expressions like 
+This program attempts to parse the normal mathematical expressions like:
+
+```
 1+1
 2*3+1
 2*(3+1)
+```
 
 ---
-## Parsing setup: BNF
+## Parsing setup: BNF for the syntax.
 
 ```
   expr   := expr '+' term | term;
@@ -40,8 +43,13 @@ struct parser_t {
 
   // Functions for each of the BNF variables.
   // ...
+  
+  value_t expr() { return value_t(); }
+  value_t term() { return value_t(); }
+  value_t factor() { return value_t(); }
+  value_t number() { return value_t(); }
 };
 
-int main() { parser_t("1+1"); return 0; }
+int main() { auto result = parser_t("1+1").expr(); return 0; }
 ```
 
