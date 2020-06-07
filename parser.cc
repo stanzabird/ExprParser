@@ -64,8 +64,10 @@ struct parser_t {
     auto token = lexer.next_token();
     if (token.end) { v.end = true; return v; }
     if (token.id != token_id::number) return v;
+    
     v.accepted = true;
     v.value = token.value;
+    return v;
   }
 };
 

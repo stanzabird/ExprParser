@@ -53,3 +53,20 @@ struct parser_t {
 int main() { auto result = parser_t("1+1").expr(); return 0; }
 ```
 
+Writing these member functions is what handwritten parsers are all about. Here I have
+the example of how I did number():
+```cpp
+value_t number() {
+  value_t v;
+  auto token = lexer.next_token();
+  if (token.end) { v.end = true; return v; }
+  if (token.id != token_id::number) return v;
+  
+  v.accepted = true;
+  v.value = token.value;
+  return v;
+}
+```
+
+As you can see, it just fetches the value of the number
+from the lexer, which is where I would want that to happen anyway.
