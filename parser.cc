@@ -25,9 +25,9 @@ struct lexer_t {
 
 
 /*
- * expr = term * term | term / term | term + term | term - term
- * term = number | ( expr )
-term = 
+  expr   := expr '+' term | term;
+  term   := term '*' factor | factor;
+  factor := '(' expr ')' | number;
  */
 
 
