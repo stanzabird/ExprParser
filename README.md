@@ -30,5 +30,18 @@ struct lexer_t {
 
 We will translate the BNF into member functions of the parser, but the
 general parser skeleton would look something like this:
+
+```cpp
+struct parser_t {
+  lexer_t lexer;
+  struct value_t { bool end; number_t value; };
+
+  parser_t(const std::string& input) : lexer(input) {}
+
+  // Functions for each of the BNF variables.
+  // ...
+};
+
+int main() { parser_t("1+1"); return 0; }
 ```
-```
+
