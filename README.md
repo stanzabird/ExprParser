@@ -8,8 +8,8 @@ This program attempts to parse the normal mathematical expressions like
 ---
 ## Parsing setup: BNF
 
-'''
+```
   expr   := expr '+' term | term;
   term   := term '*' factor | factor;
   factor := '(' expr ')' | number;
-'''
+```
