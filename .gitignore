@@ -4,6 +4,7 @@
 
 .deps/
 ExprParser
+ExprParser2
 Makefile
 Makefile.in
 aclocal.m4
