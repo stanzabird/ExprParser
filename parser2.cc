@@ -113,11 +113,33 @@ namespace parser2 {
     }
 
 
-    value_t factor(lexer_t::token_t token) { return false; }
+    value_t factor(lexer_t::token_t token) {
+      auto value = number(token);
+      if (value) {
+	return value;
+      }
+      else if (token == '(') {
+	auto token2 = lexer.next_token();
+	auto value2 = expr(token2);
+	if (value2) {
+	  auto token3 = lexer.next_token();
+	  if (token3 == ')') {
+	    return value2;
+	  }
+	  else {
+	    lexer.reject_token(token3);
+	    lexer.reject_token(token2);
+	    return false;
+	  }
+	}
+      }
+      else
+	return false;
+    }
 
-
+    value_t number(lexer_t::token_t token) { return false; }
     
-  };
+  }; // struct parser_t
   
 }
 
