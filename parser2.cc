@@ -29,8 +29,10 @@ namespace parser2 {
     value_t expr() {
       auto token = lexer.next_token();
       auto value = expr(token);
-      if (!value)
+      if (!value) {
 	lexer.reject_token(token);
+	return false;
+      }
       return value;
     }
     
