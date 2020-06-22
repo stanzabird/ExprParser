@@ -1,11 +1,45 @@
+#include <string>
+#include <vector>
+
+
 namespace parser2 {
 
+  using number_t = int;
+  
   
   struct lexer_t {
+    std::string input;
+    std::string::iterator pos;
+    
     struct token_t {
-      bool operator==(char c) { return true; }//todo
+      enum token_id
+	{
+	  op_add, op_sub, op_mul, op_div,
+	  paren_open, paren_close,
+	  number, empty
+	};
+      
+      bool end;
+      token_id id;
+      number_t value;
+      
+      token_t() : end(false), id(empty), value() {}
+      
+      bool operator==(char c) {
+	switch(c)
+	  {
+	  case '+': if (id == op_add) return true;
+	  case '-': if (id == op_sub) return true;
+	  case '*': if (id == op_mul) return true;
+	  case '/': if (id == op_div) return true;
+	  case '(': if (id == paren_open) return true;
+	  case ')': if (id == paren_close) return true;
+	  }
+	return false;
+      }
     };
 
+    lexer_t(const std::string& input) : input(input) { pos = this->input.begin(); }
     token_t next_token();
     void reject_token(token_t);
   };
