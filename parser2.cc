@@ -16,11 +16,12 @@ namespace parser2 {
       bool accepted;
       value_t() : value_t(false) {}
       value_t(bool accepted) : accepted(accepted) {}
+      operator bool() { return accepted; }//todo
+      
       value_t operator+(const value_t& value) { return value; }//todo
       value_t operator-(const value_t& value) { return value; }//todo
       value_t operator*(const value_t& value) { return value; }//todo
       value_t operator/(const value_t& value) { return value; }//todo
-      operator bool() { return accepted; }//todo
     };
 
 
