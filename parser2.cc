@@ -17,7 +17,9 @@ namespace parser2 {
       value_t() : value_t(false) {}
       value_t(bool accepted) : accepted(accepted) {}
       value_t operator+(const value_t& value) { return value; }//todo
+      value_t operator-(const value_t& value) { return value; }//todo
       value_t operator*(const value_t& value) { return value; }//todo
+      value_t operator/(const value_t& value) { return value; }//todo
       operator bool() { return accepted; }//todo
     };
 
@@ -35,6 +37,7 @@ namespace parser2 {
       auto value = term(token);
       if (value) {
 	auto token2 = lexer.next_token();
+	
 	if (token2 == '+') {
 	  auto token3 = lexer.next_token();
 	  auto value2 = term(token);
@@ -47,6 +50,20 @@ namespace parser2 {
 	    return false;
 	  }
 	}
+	
+	else if (token2 == '-') {
+	  auto token3 = lexer.next_token();
+	  auto value2 = term(token);
+	  if (value2) {
+	    return value - value2;
+	  }
+	  else {
+	    lexer.reject_token(token3);
+	    lexer.reject_token(token2);
+	    return false;
+	  }
+	}
+	
 	else {
 	  lexer.reject_token(token2);
 	}
@@ -58,6 +75,7 @@ namespace parser2 {
       auto value = factor(token);
       if (value) {
 	auto token2 = lexer.next_token();
+	
 	if (token2 == '*') {
 	  auto token3 = lexer.next_token();
 	  auto value2 = term(token);
@@ -70,6 +88,20 @@ namespace parser2 {
 	    return false;
 	  }
 	}
+	
+	else if (token2 == '/') {
+	  auto token3 = lexer.next_token();
+	  auto value2 = term(token);
+	  if (value2) {
+	    return value / value2;
+	  }
+	  else {
+	    lexer.reject_token(token3);
+	    lexer.reject_token(token2);
+	    return false;
+	  }
+	}
+	
 	else {
 	  lexer.reject_token(token2);
 	}
