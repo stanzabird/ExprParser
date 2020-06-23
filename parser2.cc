@@ -31,7 +31,7 @@ namespace parser2 {
       token_id id;
       number_t value;
       
-      token_t() : end(false), id(empty), value() {}
+      token_t() : end(false), id(token_id::empty), value() {}
       
       bool operator==(char c) {
 	switch(c)
@@ -57,6 +57,7 @@ namespace parser2 {
 	tokens.pop();
 	return retval;
       }
+      return parse_token();
     }
     void reject_token(token_t token) {
       tokens.push(token);
@@ -96,7 +97,7 @@ namespace parser2 {
     number_t parse() {
       auto token = lexer.next_token();
       auto val = expr(token);
-      if (!val) {
+      if (val.end == true) {
 	lexer.reject_token(token);
 	return false;
       }
@@ -104,7 +105,8 @@ namespace parser2 {
       // check to see if we got the entire expression
       auto token2 = lexer.next_token();
       if (token2.end != true) {
-	// error: trailing garbage in input
+        std::cout << "error: trailing garbage in input.\n";
+        exit(1);
       }
       
       return val.value;
@@ -197,20 +199,19 @@ namespace parser2 {
       else if (token == '(') {
 	auto token2 = lexer.next_token();
 	auto value2 = expr(token2);
-	if (value2) {
-	  auto token3 = lexer.next_token();
-	  if (token3 == ')') {
-	    return value2;
-	  }
-	  else {
-	    lexer.reject_token(token3);
-	    lexer.reject_token(token2);
-	    return false;
-	  }
-	}
+        if (value2) {
+          auto token3 = lexer.next_token();
+          if (token3 == ')') {
+            return value2;
+          }
+          else {
+            lexer.reject_token(token3);
+            lexer.reject_token(token2);
+          }
+        }
       }
-      else
-	return false;
+
+      return false;
     }
 
     value_t number(lexer_t::token_t token) {
