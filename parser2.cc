@@ -31,17 +31,17 @@ namespace parser2 {
       token_id id;
       number_t value;
       
-      token_t() : end(false), id(token_id::empty), value() {}
+      token_t() : end(false), id(token_t::token_id::empty), value() {}
       
       bool operator==(char c) {
 	switch(c)
 	  {
-	  case '+': if (id == op_add) return true;
-	  case '-': if (id == op_sub) return true;
-	  case '*': if (id == op_mul) return true;
-	  case '/': if (id == op_div) return true;
-	  case '(': if (id == paren_open) return true;
-	  case ')': if (id == paren_close) return true;
+            case '+': if (id == op_add) return true; break;
+            case '-': if (id == op_sub) return true; break;
+            case '*': if (id == op_mul) return true; break;
+            case '/': if (id == op_div) return true; break;
+            case '(': if (id == paren_open) return true; break;
+            case ')': if (id == paren_close) return true; break;
 	  }
 	return false;
       }
@@ -85,15 +85,15 @@ namespace parser2 {
       
       operator bool() { return accepted && !end; }
       
-      value_t operator+(const value_t& val) { value_t retval; retval.value = this->value + val.value; return retval; }
-      value_t operator-(const value_t& val) { value_t retval; retval.value = this->value - val.value; return retval; }
-      value_t operator*(const value_t& val) { value_t retval; retval.value = this->value * val.value; return retval; }
-      value_t operator/(const value_t& val) { value_t retval; retval.value = this->value / val.value; return retval; }
+      value_t operator+(const value_t& val) { value_t retval(true); retval.value = this->value + val.value; return retval; }
+      value_t operator-(const value_t& val) { value_t retval(true); retval.value = this->value - val.value; return retval; }
+      value_t operator*(const value_t& val) { value_t retval(true); retval.value = this->value * val.value; return retval; }
+      value_t operator/(const value_t& val) { value_t retval(true); retval.value = this->value / val.value; return retval; }
     };
 
 
     
-    
+    // entry point for the parser, returns the value of the expression.
     number_t parse() {
       auto token = lexer.next_token();
       auto val = expr(token);
@@ -113,20 +113,21 @@ namespace parser2 {
       return val.value;
     }
 
-
+    //
+    // syntax...
+    //
     
     value_t expr(lexer_t::token_t token) {
       auto value = term(token);
       if (value) {
-	auto token2 = lexer.next_token();
 	
+        auto token2 = lexer.next_token();
+
 	if (token2 == '+') {
 	  auto token3 = lexer.next_token();
 	  auto value2 = term(token);
 	  if (value2) {
-            auto v = value + value2;
-            v.accepted = true;
-	    return v;
+            return value + value2;
 	  }
 	  else {
 	    lexer.reject_token(token3);
@@ -139,7 +140,7 @@ namespace parser2 {
 	  auto token3 = lexer.next_token();
 	  auto value2 = term(token);
 	  if (value2) {
-	    return value - value2;
+            return value - value2;
 	  }
 	  else {
 	    lexer.reject_token(token3);
@@ -150,8 +151,10 @@ namespace parser2 {
 	
 	else {
 	  lexer.reject_token(token2);
+          return value;
 	}
       }
+
       return value;
     }
 
@@ -188,6 +191,7 @@ namespace parser2 {
 	
 	else {
 	  lexer.reject_token(token2);
+          return value;
 	}
       }
       return value;
@@ -210,6 +214,7 @@ namespace parser2 {
           else {
             lexer.reject_token(token3);
             lexer.reject_token(token2);
+            return false;
           }
         }
       }
@@ -236,6 +241,8 @@ namespace parser2 {
 
 
 
+
+
 int main(int argc,char* argv[]) {
   
   if (argc == 1) {
@@ -244,7 +251,8 @@ int main(int argc,char* argv[]) {
   }
   
   for (int i = 1; i < argc; i++) {
-    std::cout << argv[i] << " -> " << parser2::parser_t(argv[i]).parse() << "\n";
+    std::cout << argv[i] << " -> ";
+    std::cout << parser2::parser_t(argv[i]).parse() << "\n";
   }
   
   return 0;
@@ -305,3 +313,5 @@ namespace parser2 {
   }
   
 } // namespace parser2
+
+
