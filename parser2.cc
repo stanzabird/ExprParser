@@ -1,6 +1,6 @@
 #include <iostream>
+
 #include <string>
-#include <vector>
 #include <stack>
 
 
@@ -97,9 +97,10 @@ namespace parser2 {
     number_t parse() {
       auto token = lexer.next_token();
       auto val = expr(token);
-      if (val.end == true) {
-	lexer.reject_token(token);
-	return false;
+
+      if (!val) {
+        std::cout << "error: syntax error in input.\n";
+        exit(1);
       }
 
       // check to see if we got the entire expression
@@ -123,7 +124,9 @@ namespace parser2 {
 	  auto token3 = lexer.next_token();
 	  auto value2 = term(token);
 	  if (value2) {
-	    return value + value2;
+            auto v = value + value2;
+            v.accepted = true;
+	    return v;
 	  }
 	  else {
 	    lexer.reject_token(token3);
