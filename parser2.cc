@@ -87,8 +87,16 @@ namespace parser2 {
       
       value_t operator+(const value_t& val) { value_t retval(true); retval.value = this->value + val.value; return retval; }
       value_t operator-(const value_t& val) { value_t retval(true); retval.value = this->value - val.value; return retval; }
-      value_t operator*(const value_t& val) { value_t retval(true); retval.value = this->value * val.value; return retval; }
-      value_t operator/(const value_t& val) { value_t retval(true); retval.value = this->value / val.value; return retval; }
+      value_t operator*(const value_t& val) { 
+	value_t retval(true); 
+	retval.value = this->value * val.value; 
+	return retval; 
+      }
+      value_t operator/(const value_t& val) { 
+	value_t retval(true); 
+	retval.value = this->value / val.value; 
+	return retval; 
+      }
     };
 
 
@@ -151,7 +159,7 @@ namespace parser2 {
 	
 	else {
 	  lexer.reject_token(token2);
-          return value;
+          return false;
 	}
       }
 
@@ -160,7 +168,7 @@ namespace parser2 {
 
     value_t term(lexer_t::token_t token) {
       auto value = factor(token);
-      if (value) {
+     if (value) {
 	auto token2 = lexer.next_token();
 	
 	if (token2 == '*') {
@@ -180,7 +188,8 @@ namespace parser2 {
 	  auto token3 = lexer.next_token();
 	  auto value2 = term(token);
 	  if (value2) {
-	    return value / value2;
+	    auto tmp = value / value2;
+	    return tmp;
 	  }
 	  else {
 	    lexer.reject_token(token3);
